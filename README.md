@@ -22,7 +22,8 @@ var qrcode = new QRCode(document.getElementById("qrcode"), {
 	output: "svg", // or "table" or the default "canvas" to generate a PNG data-URL.
 	colorDark : "#000000",
 	colorLight : "#ffffff",
-	correctLevel : QRCode.CorrectLevel.H
+	correctLevel : QRCode.CorrectLevel.H,
+	imgStyle : "display:block; max-width:100%;" // style for img tag produced by canvas/png renderer
 });
 </script>
 ```

@@ -276,7 +276,7 @@ var QRCode;
 	var canvasDrawer = (function () { // Drawing in Canvas
 		function _onMakeImage() {
 			this._elImage.src = this._elCanvas.toDataURL("image/png");
-			this._elImage.style.display = "block";
+			this._elImage.style = this.imgStyle;
 			this._elCanvas.style.display = "none";			
 		}
 		
@@ -540,7 +540,8 @@ var QRCode;
 			typeNumber : 4,
 			colorDark : "#000000",
 			colorLight : "#ffffff",
-			correctLevel : QRErrorCorrectLevel.H
+			correctLevel : QRErrorCorrectLevel.H,
+			imgStyle : "display:block; max-width:100%;"
 		};
 		
 		if (typeof vOption === 'string') {
@@ -571,6 +572,8 @@ var QRCode;
 		    case "table": Drawing = tableDrawer; break;
 		    default: Drawing = canvasDrawer; break; // canvas+png
 		}
+		
+		Drawing.prototype.imgStyle = this._htOption.imgStyle; // See _onMakeImage()
 		
 		this._android = _getAndroid();
 		this._el = el;
