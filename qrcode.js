@@ -219,10 +219,9 @@ var QRCode;
 		return Drawing;
 	})();
 
-	var useSVG = document.documentElement.tagName.toLowerCase() === "svg";
-
 	// Drawing in DOM by using Table tag
-	var Drawing = useSVG ? svgDrawer : !_isSupportCanvas() ? (function () {
+	// var Drawing = useSVG ? svgDrawer : !_isSupportCanvas() ? 	
+	var tableDrawer = (function () {
 		var Drawing = function (el, htOption) {
 			this._el = el;
 			this._htOption = htOption;
@@ -272,7 +271,9 @@ var QRCode;
 		};
 		
 		return Drawing;
-	})() : (function () { // Drawing in Canvas
+	})();
+	
+	var canvasDrawer = (function () { // Drawing in Canvas
 		function _onMakeImage() {
 			this._elImage.src = this._elCanvas.toDataURL("image/png");
 			this._elImage.style.display = "block";
@@ -558,9 +559,17 @@ var QRCode;
 		if (typeof el == "string") {
 			el = document.getElementById(el);
 		}
-
-		if (this._htOption.useSVG) {
-			Drawing = svgDrawer;
+		
+		// backward compatibility
+		if(this._htOption.useSVG)
+			this._htOption.output = "svg";
+			
+		// set the output option 
+		switch(this._htOption.output)
+		{
+		    case "svg": Drawing = svgDrawer; break;
+		    case "table": Drawing = tableDrawer; break;
+		    default: Drawing = canvasDrawer; break; // canvas+png
 		}
 		
 		this._android = _getAndroid();
