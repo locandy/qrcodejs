@@ -23,7 +23,8 @@ var qrcode = new QRCode(document.getElementById("qrcode"), {
 	colorDark : "#000000",
 	colorLight : "#ffffff",
 	correctLevel : QRCode.CorrectLevel.H,
-	imgStyle : "display:block; max-width:100%;" // style for img tag produced by canvas/png renderer
+	imgStyle : "display:block; max-width:100%; margin-left:auto; margin-right:auto;"
+	    // style for img tag produced by canvas/png renderer
 });
 </script>
 ```
@@ -31,8 +32,17 @@ var qrcode = new QRCode(document.getElementById("qrcode"), {
 and you can use some methods
 
 ```
-qrcode.clear(); // clear the code. Important if switching output method!
-qrcode.makeCode("http://naver.com"); // make another code.
+    qrcode.setCode("http://example.com");
+        // change the qr code using all current settings and output method
+    qrcode.destruct();
+        // removes all created elements, canvas png, svg, table, follow by new QRCode(originalDiv, ...)
+    
+    // DEPRECATED:
+    qrcode.clear();
+        // DEPRECATED: svg and table same as destruct, but canvas/png works differently by only emptying canvas
+        // this is for backwards compatibility
+    qrcode.makeCode("http://example.com");
+        // DEPRECATED calls setCode(str)
 ```
 
 ## Browser Compatibility

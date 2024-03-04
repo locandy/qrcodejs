@@ -195,7 +195,8 @@ var QRCode;
 				return el;
 			}
 
-			var svg = makeSVG("svg" , {'viewBox': '0 0 ' + String(nCount + 2 * _htOption.border) + " " + String(nCount + 2 * _htOption.border), 'width': '100%', 'height': '100%', 'fill': _htOption.colorLight});
+			var svg = makeSVG("svg" , {'viewBox': '0 0 ' + String(nCount + 2 * _htOption.border) + " " + String(nCount + 2 * _htOption.border), 'width': '100%', 'height': '100%', 'fill': _htOption.colorLight, 'shape-rendering': 'crispEdges'});
+
 			svg.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
 			_el.appendChild(svg);
 
@@ -215,6 +216,9 @@ var QRCode;
 		Drawing.prototype.clear = function () {
 			while (this._el.hasChildNodes())
 				this._el.removeChild(this._el.lastChild);
+		};
+		Drawing.prototype.destruct = function () {
+			this.clear(); // removes all child nodes including svg root
 		};
 		return Drawing;
 	})();
@@ -297,6 +301,9 @@ var QRCode;
 		 */
 		Drawing.prototype.clear = function () {
 			this._el.innerHTML = '';
+		};
+		Drawing.prototype.destruct = function () {
+			this.clear(); // removes all child nodes including svg root
 		};
 		
 		return Drawing;
@@ -477,11 +484,20 @@ var QRCode;
 		};
 		
 		/**
-		 * Clear the QRCode
+		 * Paints the canvas white, ignores the alt image
 		 */
 		Drawing.prototype.clear = function () {
 			this._oContext.clearRect(0, 0, this._elCanvas.width, this._elCanvas.height);
 			this._bIsPainted = false;
+		};
+		
+		/**
+		 * Destruct the QRCode to create a new one with different drawing method on the same element.
+		 * removes all child nodes including canvas and img tag
+		 */
+		Drawing.prototype.destruct = function () {
+			while (this._el.hasChildNodes())
+				this._el.removeChild(this._el.lastChild);
 		};
 		
 		/**
@@ -623,18 +639,27 @@ var QRCode;
 		this._oDrawing = new Drawing(this._el, this._htOption);
 		
 		if (this._htOption.text) {
-			this.makeCode(this._htOption.text);	
+			this.setCode(this._htOption.text);	
 		}
 	};
 	
 	/**
 	 * Make the QRCode
 	 * 
-	 * @param {String} sText link data
+	 * @param {String} DEPRECATED SEE setCode(sText)
 	 */
 	QRCode.prototype.makeCode = function (sText) {
+	    this.setCode(sText);
+	};
+	
+	/**
+	 * Reset the QR-code content and redraw the code.
+	 * 
+	 * @param {String} sText link data
+	 */
+	QRCode.prototype.setCode = function (sText) {
 		this._oQRCode = new QRCodeModel(_getTypeNumber(sText, this._htOption.correctLevel), this._htOption.correctLevel);
-		this._oQRCode.addData(sText);
+		this._oQRCode.addData(sText); // does not addData but setData or reset the content
 		this._oQRCode.make();
 		this._el.title = sText;
 		this._oDrawing.draw(this._oQRCode);			
@@ -655,10 +680,17 @@ var QRCode;
 	};
 	
 	/**
-	 * Clear the QRCode
+	 * Clear the QRCode, make it white, but does not remove canvas or png elenemts
 	 */
 	QRCode.prototype.clear = function () {
 		this._oDrawing.clear();
+	};
+	
+	/**
+	 * Remove all created elements, so you can create a new QRCode on the original element
+	 */
+	QRCode.prototype.destruct = function () {
+		this._oDrawing.destruct();
 	};
 	
 	/**
