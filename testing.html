@@ -14,10 +14,10 @@
 <body>
 <h2>QRcode.js Simple Testing Facility</h2>
 <p>As a simple aid to testing this library, a sequence of QR-code encoded URLs will be presented for you to paste into the first text box, 
-and if that text matches the original URL string, then that test is passed and marked as such. You should then move on to the next URL. 
+and if that text matches the original URL string, then that test is passed and should mark successful by clicking the checkbox. You should then move on to the next URL. 
 If all the tests pass, you can feel more confident in the correctness and reliability of this version of the library.
-Generally, it will be most convenient to begin this test with a desktop computer displaying this page and a mobile telephone with a camera and QR-code scanning software also navigated to this site.
-In order to keep this purely client side and very simple, no server is coordination is attempted, but that means that you must manually check off the cases if and only if they pass.
+Generally, it will be most convenient to begin this test with a desktop computer displaying this page and a mobile telephone with a camera and QR-code scanning software to scan each code as they are presented, and then task switch back to the mobile browser. An attempt to read the clipboard will be made, but if it fails, merely paste the URI scanned directly into the "Scanned result text" text box.
+In order to keep this purely client side and very simple, no server is coordination is attempted, but that means that you must manually check off the cases if and only if they pass, and you must do so on both the desktop and the mobile phone in coordination.
 </p>
 <div id="controls">
 	<label for="sourcetext">Source Text:</label>
