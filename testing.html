@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Cross-Browser QRCode generator for Javascript</title>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+	<script type="text/javascript" src="qrcode.js"></script>
+	<style>
+		#controls { margin: 2em; }
+		#sourcetext, #scanresult { width:80em; }
+		.successful { color: green; border: 1px solid #D0E0FF; border-radius:.25em; font-weight:bold; padding: .25em; margin:1.5em; }
+	</style>
+</head>
+<body>
+<h2>QRcode.js Simple Testing Facility</h2>
+<p>As a simple aid to testing this library, a sequence of QR-code encoded URLs will be presented for you to paste into the first text box, 
+and if that text matches the original URL string, then that test is passed and marked as such. You should then move on to the next URL. 
+If all the tests pass, you can feel more confident in the correctness and reliability of this version of the library.
+Generally, it will be most convenient to begin this test with a desktop computer displaying this page and a mobile telephone with a camera and QR-code scanning software also navigated to this site.
+In order to keep this purely client side and very simple, no server is coordination is attempted, but that means that you must manually check off the cases if and only if they pass.
+</p>
+<div id="controls">
+	<label for="sourcetext">Source Text:</label>
+	<input id="sourcetext" type="text" value="" onblur="makeCode()"/>
+	<input id="svg" type="checkbox" onchange="changeSVG(this)"><label for="svg">Use SVG</label>
+</div>
+
+<div id="qrcode" style="height:500px; margin-top:auto;" ></div>
+
+<div>
+	<hr/>
+	<label for="scanresult">Scanned result text:</label>
+	<input id="scanresult" type="text" value="" conchange="checkTestCase()" />
+	<span id="status"></span>
+	<ul id="testcases">
+		<!-- To be populated dynamically -->
+	</ul>
+</div>
+
+
+
+<script type="text/javascript">
+const urlSequence = [
+		"https://web.dev/",  //short
+		"https://github.com/locandy/qrcodejs/blob/HEAD/qrcode.js#L568?artifical_length_extension_to_achieve_approximately_two-hundred-ninety-nine_character_length=as_this_was_known_to_result_in_an_overflow_error_somewhere_in_the_reed-solomon_error_correction_table_lookups&test_url_param_chars=simultaneously", //long + url param characters embedded
+		"http://a.b.c.d.e.f.g.h.i.j.k.l.m.n.oo.pp.qqq.rrrr.ssssss.tttttttt.uuuuuuuuuuu.vvvvvvvvvvvvvvv.wwwwwwwwwwwwwwwwwwwwww.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy.zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz.me/about-260-chars/back-there/but_by_the_time_this_is_done/it_should_be_upwards_of_300_characters/You_read_that_right/UPWARDS_OF_THREE_HUNDRED/NO_UPWARDS_OF_FOUR_HUNDRED/", //SUPER long
+		"http://detectportal.firefox.com/success.txt", //no ssl
+		"https://multimedia-audioguide.locandy.com/",
+		"https://apps.apple.com/ua/app/locandy/id789268894",
+		"https://en.wikipedia.org/wiki/QR_code"
+	];
+var lastTestPassed = -1;
+var debounce = Date.now();
+var div = document.getElementById("qrcode");
+var qrcode = new QRCode(div, { 
+	width:400, 
+	height:400, 
+	output:"canvas+png" // or "svg" or "table"
+}); 
+
+function makeCode () {		
+	var elText = document.getElementById("sourcetext");
+	
+/*
+	if (!elText.value) {
+		alert("Input a text");
+		elText.focus();
+		return;
+	}
+*/
+	
+	qrcode.setCode(elText.value);
+}
+
+function changeSVG(inputCheckbox)
+{
+    qrcode.clear();
+    
+    if(inputCheckbox.checked)
+        qrcode = new QRCode(div, { width:400, height:400, output:"svg" });
+    else
+        qrcode = new QRCode(div, { width:400, height:400, output:"canvas" });
+
+    makeCode();
+}
+
+
+function testStep () {
+	let elText = document.getElementById("sourcetext");
+	elText.value = urlSequence[lastTestPassed + 1];
+	makeCode();
+	if (lastTestPassed > -1) {
+		if (lastTestPassed < urlSequence.length - 1) {
+			document.querySelector("#testcases > li:nth-child("+ (lastTestPassed + 2) +") > input[type='checkbox']").disabled=false;
+		} 
+		if (lastTestPassed) {
+			if (lastTestPassed >= urlSequence.length - 1) {
+				alert("Testing complete! All tests successful!");
+				console.log("Testing complete! All tests successful!");
+			}
+			//console.log("[x] Test Passed!  ( " + urlSequence[lastTestPassed] + " )");
+			//todo add fancy display element
+		}
+	}
+	let elResult = document.getElementById("scanresult");
+	elResult.value="";
+	let elStatus = document.getElementById("status");
+	elStatus.innerHTML= "[ ] awaiting decoded text for test";
+	elStatus.classList.remove('successful');
+}
+
+function checkTestCase () {
+	let rightnow = Date.now();
+	if ((rightnow - debounce) < 800) {
+		//noop
+		console.log("debouncing...");
+	} else {
+		debounce = rightnow;
+		let elResult = document.getElementById("scanresult");
+		if (elResult.value && elResult.value == urlSequence[lastTestPassed+1]) {
+			lastTestPassed += 1;
+			console.log("[x] Test Passed!  ( " + urlSequence[lastTestPassed] + " )");
+			testStep();
+		} else {
+			console.warn("Uh oh! This test was NOT passed!");
+		}
+	}
+}
+
+
+if(window.location.hash && window.location.hash.match(/#[0-9]+$/)) {
+	lastTestPassed = parseInt(window.location.hash.substring(1));
+} 
+//makeCode();
+
+//wire up 
+let elScanResult = document.getElementById("scanresult");
+elScanResult.addEventListener('input', (event) => {
+	if (event.currentTarget.value === urlSequence[lastTestPassed+1]) {
+			console.log("[&check;] Test Passed!  ( " + urlSequence[lastTestPassed+1] + " )");
+			let elStatus = document.getElementById("status");
+			elStatus.innerHTML= "[&check;] Test Passed!";
+			elStatus.classList.add('successful');
+			//"&check;"
+			//"&cross;"
+	} else {
+			console.log("[&cross;] Test FAILED!  ( " + urlSequence[lastTestPassed+1] + " )");
+	}
+});
+
+//focus event on window works on desktop consistently, on android sometimes: 
+window.addEventListener('focus', (event) => {
+	console.log("just got focus again, attempt clipboard acquire...");
+	let elScanResult = document.getElementById("scanresult");
+	navigator.clipboard.readText().then((clipText) => {
+		elScanResult.value = clipText;
+		elScanResult.dispatchEvent(new Event('input', { bubbles: true }));
+	});	
+});
+
+urlSequence.unshift(document.URL);
+let elTestCases = document.getElementById("testcases");
+for (let i = 0; i<urlSequence.length; i++) {
+	console.log(urlSequence[i]);
+	let newLI = document.createElement("li");
+	newLI.innerText= urlSequence[i];
+	const checkboxElement = document.createElement("input");
+	checkboxElement.type = "checkbox";
+	checkboxElement.id = "test_"+i;
+	if (i) {
+		checkboxElement.disabled = true;
+	}
+	checkboxElement.addEventListener('change', (event) => {
+		if (event.currentTarget.checked) {
+			lastTestPassed+=1;
+			//window.location.hash='#'+lastTestPassed;testStep();
+			testStep();
+		}
+	});
+	newLI.appendChild(checkboxElement);
+	elTestCases.appendChild(newLI);
+}
+
+testStep();
+
+</script>
+</body>
+</html>
