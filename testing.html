@@ -32,9 +32,9 @@ In order to keep this purely client side and very simple, no server is coordinat
 	<label for="scanresult">Scanned result text:</label>
 	<input id="scanresult" type="text" value="" conchange="checkTestCase()" />
 	<span id="status"></span>
-	<ul id="testcases">
+	<ol id="testcases">
 		<!-- To be populated dynamically -->
-	</ul>
+	</ol>
 </div>
 
 
@@ -60,15 +60,6 @@ var qrcode = new QRCode(div, {
 
 function makeCode () {		
 	var elText = document.getElementById("sourcetext");
-	
-/*
-	if (!elText.value) {
-		alert("Input a text");
-		elText.focus();
-		return;
-	}
-*/
-	
 	qrcode.setCode(elText.value);
 }
 
@@ -99,7 +90,6 @@ function testStep () {
 				console.log("Testing complete! All tests successful!");
 			}
 			//console.log("[x] Test Passed!  ( " + urlSequence[lastTestPassed] + " )");
-			//todo add fancy display element
 		}
 	}
 	let elResult = document.getElementById("scanresult");
@@ -131,7 +121,6 @@ function checkTestCase () {
 if(window.location.hash && window.location.hash.match(/#[0-9]+$/)) {
 	lastTestPassed = parseInt(window.location.hash.substring(1));
 } 
-//makeCode();
 
 //wire up 
 let elScanResult = document.getElementById("scanresult");
@@ -173,8 +162,30 @@ for (let i = 0; i<urlSequence.length; i++) {
 	checkboxElement.addEventListener('change', (event) => {
 		if (event.currentTarget.checked) {
 			lastTestPassed+=1;
-			//window.location.hash='#'+lastTestPassed;testStep();
 			testStep();
+		} else {
+			console.log("note: we just unchecked, maybe warn to keep in sync?");
+			let testIndex = 0;
+			//first cycle up from zero to ensure we are contiguous, 
+			let contiguous = true;
+			let checkboxes = document.querySelectorAll('#testcases input[type="checkbox"]');
+			checkboxes.forEach((checkbox) => {
+				if (checkbox.checked && contiguous) {
+					console.log(checkbox.id + " check'd");
+					testIndex += 1;
+				} else {
+					console.log(checkbox.id + " not check'd");
+					contiguous = false;
+				}
+			});
+			//then correct internal state
+			lastTestPassed = testIndex - 1;
+			navigator.clipboard.writeText(" ").then(() => {
+				console.log("Text copied to clipboard successfully!");
+				testStep();
+				//checkTestCase();
+			})
+			alert("Test previously marked 'passed' has been unmarked. Make sure to keep your device test list in sync!");
 		}
 	});
 	newLI.appendChild(checkboxElement);
