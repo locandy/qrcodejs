@@ -1,0 +1,15 @@
+{
+  "name": "qrcodejs",
+  "description": "QRCode.js is javascript library for making QRCodes as SVG, canvas/PNG ot table. QRCode.js has no dependencies, not even for the demo anymore.",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/locandy/qrcodejs.git"
+  },
+  "author": "Locandy GmbH",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/locandy/qrcodejs/issues"
+  },
+  "homepage": "https://github.com/locandy/qrcodejs"
+}
