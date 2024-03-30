@@ -11,5 +11,6 @@
   "bugs": {
     "url": "https://github.com/locandy/qrcodejs/issues"
   },
-  "homepage": "https://github.com/locandy/qrcodejs"
+  "homepage": "https://github.com/locandy/qrcodejs",
+  "main": "qrcode.js"
 }
