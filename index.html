@@ -1,23 +1,33 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+<!DOCTYPE html>
+<html>
 <head>
-<title>Cross-Browser QRCode generator for Javascript</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
-<script type="text/javascript" src="qrcode.js"></script>
+	<title>Cross-Browser QRCode generator for Javascript</title>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+	<script type="text/javascript" src="qrcode.js"></script>
+	<style>
+		#controls { margin: 2em; }
+		#text { width:40em; }
+	</style>
 </head>
 <body>
+<h2>QRcode.js Demonstration</h2>
+<div id="controls">
+	<input id="text" type="text" value="https://en.wikipedia.org/wiki/QR_code" onblur="makeCode()"/>
+	<input id="svg" type="checkbox" onchange="changeSVG(this)"><label for="svg">Use SVG</label>
+</div>
 
-<input id="text" type="text" value="http://jindo.dev.naver.com/collie" style="width:300px" onblur="makeCode()"/>
-<input id="svg" type="checkbox" onchange="changeSGV(this)"><label for="svg">Use SVG</label>
-<br/>
-<br/>
 <div id="qrcode" style="height:500px; margin-top:auto;"></div>
+
 
 <script type="text/javascript">
 
 var div = document.getElementById("qrcode");
-var qrcode = new QRCode(div, { width:400, height:400, output:"canvas+png" }); // or "svg" or "table"
+var qrcode = new QRCode(div, { 
+	width:400, 
+	height:400, 
+	output:"canvas+png" // or "svg" or "table"
+}); 
 
 function makeCode () {		
 	var elText = document.getElementById("text");
@@ -28,10 +38,10 @@ function makeCode () {
 		return;
 	}
 	
-	qrcode.makeCode(elText.value);
+	qrcode.setCode(elText.value);
 }
 
-function changeSGV(inputCheckbox)
+function changeSVG(inputCheckbox)
 {
     qrcode.clear();
     
@@ -47,3 +57,4 @@ makeCode();
 
 </script>
 </body>
+</html>
