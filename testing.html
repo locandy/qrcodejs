@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<title>Cross-Browser QRCode generator for Javascript</title>
-	<meta charset="utf-8"/>
-	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
-	<script type="text/javascript" src="qrcode.js"></script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<script src="qrcode.js"></script>
 	<style>
 		#controls { margin: 2em; }
 		#sourcetext, #scanresult { width:80em; }
@@ -21,25 +21,20 @@ In order to keep this purely client side and very simple, no server is coordinat
 </p>
 <div id="controls">
 	<label for="sourcetext">Source Text:</label>
-	<input id="sourcetext" type="text" value="" onblur="makeCode()"/>
+	<input id="sourcetext" type="text" value="" onblur="makeCode()">
 	<input id="svg" type="checkbox" onchange="changeSVG(this)"><label for="svg">Use SVG</label>
 </div>
-
 <div id="qrcode" style="height:500px; margin-top:auto;" ></div>
-
 <div>
-	<hr/>
+	<hr>
 	<label for="scanresult">Scanned result text:</label>
-	<input id="scanresult" type="text" value="" conchange="checkTestCase()" />
+	<input id="scanresult" type="text" value="" onchange="checkTestCase()">
 	<span id="status"></span>
 	<ol id="testcases">
 		<!-- To be populated dynamically -->
 	</ol>
 </div>
-
-
-
-<script type="text/javascript">
+<script>
 const urlSequence = [
 		"https://web.dev/",  //short
 		"https://github.com/locandy/qrcodejs/blob/HEAD/qrcode.js#L568?artifical_length_extension_to_achieve_approximately_two-hundred-ninety-nine_character_length=as_this_was_known_to_result_in_an_overflow_error_somewhere_in_the_reed-solomon_error_correction_table_lookups&test_url_param_chars=simultaneously", //long + url param characters embedded
@@ -193,7 +188,6 @@ for (let i = 0; i<urlSequence.length; i++) {
 }
 
 testStep();
-
 </script>
 </body>
 </html>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<title>Cross-Browser QRCode generator for Javascript</title>
-	<meta charset="utf-8"/>
-	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
-	<script type="text/javascript" src="qrcode.js"></script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<script src="qrcode.js"></script>
 	<style>
 		#controls { margin: 2em; }
 		#text { width:40em; }
@@ -13,15 +13,11 @@
 <body>
 <h2>QRcode.js Demonstration</h2>
 <div id="controls">
-	<input id="text" type="text" value="https://en.wikipedia.org/wiki/QR_code" onblur="makeCode()"/>
+	<input id="text" type="text" value="https://en.wikipedia.org/wiki/QR_code" onblur="makeCode()">
 	<input id="svg" type="checkbox" onchange="changeSVG(this)"><label for="svg">Use SVG</label>
 </div>
-
 <div id="qrcode" style="height:500px; margin-top:auto;"></div>
-
-
-<script type="text/javascript">
-
+<script>
 var div = document.getElementById("qrcode");
 var qrcode = new QRCode(div, { 
 	width:400, 
@@ -54,7 +50,6 @@ function changeSVG(inputCheckbox)
 }
 
 makeCode();
-
 </script>
 </body>
 </html>
